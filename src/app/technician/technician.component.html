@@ -1,0 +1,130 @@
+<app-navbar></app-navbar>
+
+<div class="tech-layout">
+
+  <!-- Top Bar -->
+  <header class="tech-topbar">
+    <div class="title">
+      <h1>Technician Dashboard</h1>
+      <p>Upload CT scans and initiate AI analysis</p>
+    </div>
+
+    <div class="status-pill">
+      System Status: <span class="online">Online</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="tech-grid">
+
+    <!-- Upload Panel -->
+    <section class="panel upload-panel">
+      <h2>1. Upload CT Scan</h2>
+
+      <div class="drop-zone" (click)="fileInput.click()">
+
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+
+        <div class="drop-content">
+          <span class="icon">📤</span>
+
+          <p *ngIf="!selectedFile">Click to upload CT image</p>
+          <p *ngIf="selectedFile">{{ selectedFile.name }}</p>
+
+          <small>Supported formats: JPG, PNG</small>
+        </div>
+      </div>
+
+      <button
+        class="primary-btn"
+        (click)="startAnalysis()"
+        [disabled]="!selectedFile || loading">
+
+        <span *ngIf="!loading">Start AI Analysis</span>
+        <span *ngIf="loading">Processing AI Model...</span>
+
+      </button>
+    </section>
+
+    <!-- Result Panel -->
+    <section class="panel result-panel">
+      <h2>2. AI Analysis Result</h2>
+
+      <!-- Metrics -->
+      <div class="metrics" *ngIf="analysisResult">
+
+        <div class="metric">
+          <span class="label">Diagnosis</span>
+          <span
+            class="value"
+            [ngClass]="analysisResult.result === 'Stone Detected' ? 'danger' : ''">
+            {{ analysisResult.result }}
+          </span>
+        </div>
+
+        <!-- <div class="metric">
+          <span class="label">Confidence</span>
+          <span class="value">
+            {{ analysisResult.confidence }}%
+          </span>
+        </div> -->
+
+        <div class="metric">
+          <span class="label">Stone Area (px)</span>
+          <span class="value">
+            {{ analysisResult.stone_pixels }}
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="label">Severity</span>
+          <span class="value">
+            {{ analysisResult.severity }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Image Preview -->
+      <div class="image-preview">
+
+        <div class="image-placeholder" *ngIf="!analysisResult">
+          AI Result Image Preview
+        </div>
+
+        <!-- Segmentation -->
+        <div *ngIf="analysisResult">
+          <h3>Segmentation Output</h3>
+          <img
+            [src]="'data:image/png;base64,' + analysisResult.segmentation_image"
+            class="result-image"
+          />
+        </div>
+
+        <!-- Heatmap -->
+        <div *ngIf="analysisResult">
+          <h3>Stone Heatmap</h3>
+          <img
+            [src]="'data:image/png;base64,' + analysisResult.heatmap_image"
+            class="result-image"
+          />
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="tech-footer">
+    <span>UroScan Technician Console</span>
+    <span>AI-Assisted Diagnosis</span>
+  </footer>
+
+</div>

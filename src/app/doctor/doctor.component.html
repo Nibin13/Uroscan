@@ -1,0 +1,154 @@
+<app-navbar></app-navbar>
+
+<div class="doctor-layout">
+
+  <!-- Header -->
+  <header class="doctor-header">
+    <h1>Doctor Review Dashboard</h1>
+    <p>Review AI-analyzed CT scans</p>
+  </header>
+
+  <div class="doctor-grid">
+
+    <!-- LEFT SIDE - SCAN LIST -->
+    <div class="scan-list panel">
+      <h2>Assigned Scans</h2>
+
+      <div
+        *ngFor="let scan of scans"
+        (click)="selectScan(scan)"
+        class="scan-card"
+        [class.active]="selectedScan?._id === scan._id"
+        [ngClass]="{
+          'reviewed': scan.status === 'Reviewed',
+          'pending': scan.status !== 'Reviewed'
+        }"
+      >
+
+        <p><strong>Patient:</strong> {{ scan.patient_id }}</p>
+        <p><strong>Diagnosis:</strong> {{ scan.diagnosis }}</p>
+
+        <p>
+          <strong>Status:</strong>
+          <span
+            class="status-badge"
+            [ngClass]="{
+              'reviewed': scan.status === 'Reviewed',
+              'pending': scan.status !== 'Reviewed'
+            }"
+          >
+            {{ scan.status }}
+          </span>
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE - SCAN DETAILS -->
+    <div class="scan-detail panel" *ngIf="selectedScan">
+
+      <h2>Scan Review</h2>
+
+      <!-- Status Display -->
+      <!-- <div class="status-section">
+        <span
+          class="status-badge large"
+          [ngClass]="{
+            'reviewed': selectedScan.status === 'Reviewed',
+            'pending': selectedScan.status !== 'Reviewed'
+          }"
+        >
+          {{ selectedScan.status }}
+        </span>
+      </div> -->
+
+      <!-- Metrics -->
+      <div class="metrics">
+
+        <div class="metric">
+          <span class="label">Diagnosis</span>
+          <span
+            class="value"
+            [ngClass]="selectedScan.diagnosis === 'Stone Detected' ? 'danger' : ''"
+          >
+            {{ selectedScan.diagnosis }}
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="label">Confidence</span>
+          <span class="value">
+            {{ selectedScan.confidence }}%
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="label">Stone Area</span>
+          <span class="value">
+            {{ selectedScan.stone_pixels }}
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="label">Severity</span>
+          <span class="value">
+            {{ selectedScan.severity }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Image Comparison -->
+      <div class="image-comparison">
+
+        <!-- Original CT -->
+        <div class="image-box">
+          <h3>Original CT</h3>
+          <img
+            *ngIf="selectedScan.original_image"
+            [src]="'data:image/png;base64,' + selectedScan.original_image"
+            class="compare-image"
+          />
+        </div>
+
+        <!-- Segmentation -->
+        <div class="image-box">
+          <h3>Segmentation Output</h3>
+          <img
+            *ngIf="selectedScan.segmentation_image"
+            [src]="'data:image/png;base64,' + selectedScan.segmentation_image"
+            class="compare-image"
+          />
+        </div>
+
+      </div>
+
+      <!-- Heatmap -->
+      <h3 class="heatmap-title">Stone Confidence Heatmap</h3>
+      <img
+        *ngIf="selectedScan.heatmap_image"
+        [src]="'data:image/png;base64,' + selectedScan.heatmap_image"
+        class="heatmap-image"
+      />
+
+      <!-- Doctor Notes -->
+      <textarea
+        [(ngModel)]="selectedScan.doctor_notes"
+        placeholder="Add clinical notes..."
+      ></textarea>
+
+      <!-- Review Button -->
+      <button
+        class="review-btn"
+        (click)="markReviewed()"
+        [disabled]="selectedScan.status === 'Reviewed'"
+      >
+        Mark as Reviewed
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

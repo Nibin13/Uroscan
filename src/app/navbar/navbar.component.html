@@ -1,0 +1,40 @@
+<nav class="navbar">
+
+  <!-- Left: Logo -->
+  <div class="nav-left">
+    <span class="logo">UroScan</span>
+    <span class="subtitle">Clinical AI Platform</span>
+  </div>
+
+  <!-- Center: Navigation Links -->
+  <div class="nav-center">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Home
+    </a>
+    <!-- <a routerLink="/doctor" routerLinkActive="active">
+      Doctor
+    </a>
+    <a routerLink="/technician" routerLinkActive="active">
+      Technician
+    </a> -->
+  </div>
+
+  <!-- Right: User Section -->
+  <div class="nav-right" *ngIf="isLoggedIn(); else guestLinks">
+
+    <div class="user-info">
+      <span class="role-badge">{{ role }}</span>
+    </div>
+
+    <button class="logout-btn" (click)="logout()">Logout</button>
+
+  </div>
+
+  <ng-template #guestLinks>
+    <div class="nav-right">
+      <a routerLink="/signin" class="auth-link">Sign In</a>
+      <a routerLink="/register" class="auth-btn">Register</a>
+    </div>
+  </ng-template>
+
+</nav>
